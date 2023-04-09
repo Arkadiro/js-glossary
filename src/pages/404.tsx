@@ -1,11 +1,12 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
-import Nav from "@/components/nav/nav";
+
 import React from "react";
+import Error404 from "@/components/error404/error404";
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Auth() {
+export default function index() {
   return (
     <>
       <Head>
@@ -15,8 +16,7 @@ export default function Auth() {
         <meta property="og:locale" content="ru_RU" />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-        <div>Auth</div>
-      <Nav></Nav>
+        <Error404></Error404>
     </>
   )
 }

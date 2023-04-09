@@ -1,5 +1,7 @@
 import React from 'react';
 import * as Styled from './article.styles';
+import Image from "@/components/image/image";
+import directory from "./img/directory.svg"
 
 const Article: React.FC = () => {
 
@@ -9,13 +11,14 @@ const Article: React.FC = () => {
 
             <section>
                 <header>
-                    <h1>Раздел 2</h1>
+                    <h1>Раздел </h1>
                     <span>Узнай основы</span>
                     <a href="https://caniuse.com/css-grid">
-                        Справочник
+                       {/*<Image image="vercel.svg"/>*/}
+                       <span>Справочник</span>
                     </a>
                 </header>
-                <article>ARTICLE 44</article>
+                <article>ARTICLE</article>
             </section>
 
         </Styled.Article>

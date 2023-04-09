@@ -7,7 +7,7 @@ const Nav: React.FC = () => {
 
         <Styled.Nav>
 
-                <Styled.NavHeader>ITECH</Styled.NavHeader>
+                <Styled.NavHeader></Styled.NavHeader>
 
                     <nav>
                         <a href="https://caniuse.com/css-grid">ОБУЧЕНИЕ</a>

@@ -1,12 +1,12 @@
 import Head from 'next/head';
 import { Inter } from 'next/font/google';
-import MainPage from '@/components/main-page/main-page';
-
+import Nav from "@/components/nav/nav";
 import React from "react";
+import Article from "@/components/article/article";
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function index() {
+export default function learn() {
   return (
     <>
       <Head>
@@ -16,8 +16,8 @@ export default function index() {
         <meta property="og:locale" content="ru_RU" />
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-     <MainPage></MainPage>
-
+      <Article></Article>
+      <Nav></Nav>
     </>
   )
 }
