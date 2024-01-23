@@ -7,7 +7,6 @@ import React from 'react';
 const HomePage: NextPage = () => {
   return (
       <MainPage></MainPage>
-
   )
 }
 
