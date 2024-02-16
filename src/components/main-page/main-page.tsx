@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import * as Styled from './main-page.styles';
 import SvgComponent from '../../img/directory';
 import { useSelector } from 'react-redux';
+import Link from 'next/link'
 import {StateModel} from '../../redux/state.model'
 
 const MainPage: React.FC = () => {
@@ -18,8 +19,9 @@ const MainPage: React.FC = () => {
 
   return (
     <Styled.MainPage>
-      {/* <div>{showHeader('New header')}</div> */}
-      {/* <SvgComponent /> */}
+      <div>{showHeader('New header')}</div>
+      <SvgComponent />
+      <Link href={'quiz'}>Пройдите тест</Link>
     </Styled.MainPage>
   )
 };
