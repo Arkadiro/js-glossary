@@ -1,140 +1,130 @@
-import React from 'react';
-import * as Styled from './quiz.styles';
-import Image from "@/components/image/image";
-import directory from "./img/directory.svg"
+// import Image from '@/components/image/image'
+// import directory from './img/directory.svg'
+
+import { useEffect, useState } from 'react'
+import * as Styled from './quiz.styles'
 import { data, answers, answersOrder } from './content'
 
 //ts
 
 const Quiz: React.FC = () => {
-    let score = 0;
+    // Сделал, чтобы empty не попадали в массив ответов,
+    // потому что иначе будет баг при валидации
+    const initialSelectedAnswers = Array.from({ length: data.length }, () => '')
+    const [selectedAnswers, setSelectedAnswers] = useState<string[]>(
+        initialSelectedAnswers
+    )
 
-    
-    // const results = document.getElementById('results');
-    // const quizForm = document.getElementById('quizForm');
-    // const body = document.body;
-    
-    // const buildQuestions = () => {
-    //     data.forEach((e, i) => {
-    //         quizForm.insertAdjacentHTML('beforeend', `
-    //             <h3>${i + 1}. ${e.question}</h3>
-    //             <div id='question${i + 1}'></div>
-    //         `);
-    //     });
-    //     quizForm.insertAdjacentHTML('beforeend', `
-    //             <input type="submit" value="Submit Answers"></input>
-    //         `);
-    // };
-    
-    // const buildAnswers = () => {
-    //     data.forEach((e, index) => {
-    //         const question = document.getElementById(`question${index + 1}`);
-    //         e.answers.forEach((e, i) => {
-    //             question.innerHTML += `
-    //                 <input type="radio" name="q${index + 1}" value="${answersOrder[i]}" id="q1a">${answersOrder[i]}. ${e}<br>
-    //             `;
-    //         });
-    //     })
-    // };
-    
-    // const popup = (e) => {
-    //     if (e === 'show') {
-    //         body.style.overflowY = 'hidden';
-    //         results.style.opacity = `0.8`;
-    //         results.style.zIndex = '1';
-    //     } else if (e === 'hide') {
-    //         body.style.overflowY = 'auto';
-    //         results.style.opacity = '0';
-    //         results.style.zIndex = '-1';
-    //     }
-    // };
-    
-    // const addEventListeners = () => {
-    //     quizForm.addEventListener('submit', (e) => {
-    //         e.preventDefault();
-    //         submitAnswers();
-    //     });
-    //     results.addEventListener('click', () => {
-    //         popup('hide');
-    //         score !== 0 ? quizForm.reset() : null;
-    //         score = 0;
-    
-    //     });
-    // };
-    
-    // buildQuestions();
-    // buildAnswers();
-    // addEventListeners();
-    
-    // const submitAnswers = () => {
-    //     if (score !== 0) {
-    //         score = 0;
-    //     };
-    
-    //     const total = data.length;
-    
-    //     popup('show');
-    
-    //     //Get user input
-    //     const userInput = [];
-    //     data.forEach((e, i) => {
-    //         if (document.forms["quizForm"][`q${i + 1}`].value === '') {
-    //             userInput.push(null);
-    //         } else {
-    //             userInput.push(document.forms["quizForm"][`q${i + 1}`].value);
-    //         };
-    //     });
-    
-    //     //Validation
-    //     for (let [i, value] of userInput.entries()) {
-    //         if (value === null) {
-    //             results.innerHTML = `
-    //                 <h3> You missed question ${i + 1}</h3>
-    //             `;
-    //             break;
-    //         }
-    //     };
-    
-    
-    //     //Check Answers
-    //     for (let [i] of userInput.entries()) {
-    //         if (userInput[i] === answers[i]) {
-    //             score++;
-    //         }
-    //     };
-    
-    //     // Display results
-    //     if (!userInput.includes(null)) {
-    //         results.innerHTML = '<h3>You scored <span>' + score + '</span> out of <span>' + total + '</span></h3>';
-    //     };
-    
-    // }
+    // Знаю, что ts и так бы определил их стили...
+    const [score, setScore] = useState<number>(0)
+    const [validate, setValidate] = useState<boolean>(false)
+    const [showResultModal, setShowResultModal] = useState<boolean>(false)
+
+    // Проверяем ответы, начисляем баллы
+    function checkAnswers() {
+        let currentScore = 0
+
+        selectedAnswers.forEach((selectedAnswer: string, index: number) => {
+            if (selectedAnswer === answers[index]) {
+                currentScore++
+            }
+        })
+        setScore(currentScore)
+    }
+
+    // Выбор варианта ответа
+    function handleAnswerChange(index: number, answer: string) {
+        const newSelectedAnswers = [...selectedAnswers]
+        newSelectedAnswers[index] = answer
+        setSelectedAnswers(newSelectedAnswers)
+    }
+
+    // Дисаблим кнопку
+    function validateAnswers() {
+        if (
+            selectedAnswers.length === data.length &&
+            selectedAnswers.every((answer) => !!answer)
+        ) {
+            setValidate(true)
+        } else setValidate(false)
+    }
+
+    // Считать баллы будем только при сабмите формы
+    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        validateAnswers()
+
+        checkAnswers()
+        setShowResultModal(true)
+    }
+
+    // Рендерим модалку
+    // Вынес ее сюда, чтобы почище было в разметке
+    function renderModalMessage() {
+        return (
+            <h3>
+                You scored <span>{score}</span> out of{' '}
+                <span>{data.length}</span>
+            </h3>
+        )
+    }
+
+    // Запрещаю скрол, при открытии модалки
+    useEffect(() => {
+        if (showResultModal) {
+            document.body.style.overflowY = 'hidden'
+        } else {
+            document.body.style.overflowY = 'scroll'
+        }
+    }, [showResultModal])
+
+    useEffect(() => {
+        validateAnswers()
+    }, [handleAnswerChange])
 
     return (
-
         <Styled.Quiz>
             <div id="container">
                 <header>
                     <h1>Simple JS Quiz</h1>
-                    <p>Test your knowlage in <strong>JS fundamantals</strong></p>
+                    <p>
+                        Test your knowlage in <strong>JS fundamantals</strong>
+                    </p>
                 </header>
                 <section>
-                    <div id="results"></div>
-                    <form name="quizForm" id="quizForm">
+                    {/* Показываем модалку */}
+                    {showResultModal && renderModalMessage()}
+                    <form name="quizForm" onSubmit={handleSubmit}>
                         {data.map((e, index) => (
-                            <>
-                                <h3>{index + 1}. {e.question}</h3>
-                                <div id={'question ' + index + 1}> 
-                                {e.answers.map((e, i) => (
-                                        <>
-                                        <input type="radio" name="q${index + 1}" value="${answersOrder[i]}" id="q1a"/>{answersOrder[i] + `. ${e}`}
-                                        <br/>
-                                        </>
+                            <div key={index}>
+                                <h3>
+                                    {index + 1}. {e.question}
+                                </h3>
+                                <div id={'question ' + index + 1}>
+                                    {e.answers.map((answer, i) => (
+                                        // Для уникальности добавил 'a'
+                                        <label key={i + 'a'}>
+                                            <input
+                                                type="radio"
+                                                name={(index + 1).toString()}
+                                                value={answer[i]}
+                                                onChange={() =>
+                                                    handleAnswerChange(
+                                                        index,
+                                                        answersOrder[i]
+                                                    )
+                                                }
+                                            />
+                                            {answersOrder[i] + `. ${answer}`}
+                                            <br />
+                                        </label>
                                     ))}
                                 </div>
-                            </>
+                            </div>
                         ))}
-                        <input type="submit" value="Submit Answers"></input>
+                        <button type="submit" disabled={!validate}>
+                            Submit Answers
+                        </button>
                     </form>
                 </section>
                 <footer>
@@ -143,6 +133,6 @@ const Quiz: React.FC = () => {
             </div>
         </Styled.Quiz>
     )
-};
+}
 
-export default Quiz;
+export default Quiz
